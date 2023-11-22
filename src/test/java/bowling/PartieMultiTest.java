@@ -32,6 +32,11 @@ public class PartieMultiTest {
 			"prochain lancer : Paul ");
 
 	}
+	@Test
+	void nvLanceStrkie(){
+		assertEquals("Prochain tir : joueur Paul, tour n° 1, boule n° 1",partie.enregistreLancer(10),
+			"prochain lancer : Paul ");
+	}
 	
 
 	@Test

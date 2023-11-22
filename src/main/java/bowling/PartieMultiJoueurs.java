@@ -5,8 +5,7 @@ import java.util.ArrayList;
 public class PartieMultiJoueurs implements IPartieMultiJoueurs {
 	private PartieMonoJoueur[] parties;
 
-	private String[] nomDesJoueurs;
-	private int numProchainJoueur;
+	private String[] nomsDesJoueurs;
 	private String prochainJoueur;
 
 
@@ -21,16 +20,14 @@ public class PartieMultiJoueurs implements IPartieMultiJoueurs {
 	@Override
 	public String demarreNouvellePartie(String[] nomsDesJoueurs) throws IllegalArgumentException {
 		if (nomsDesJoueurs == null) throw new IllegalArgumentException("pas de joueurs");
-		this.nomDesJoueurs = nomsDesJoueurs;
-		this.numProchainJoueur = 0;
-		this.prochainJoueur = nomsDesJoueurs[numProchainJoueur];
-		this.parties =new PartieMonoJoueur[nomDesJoueurs.length];
-		for (int i = 0; i < nomDesJoueurs.length; i++) {
+		this.nomsDesJoueurs = nomsDesJoueurs;
+		this.parties =new PartieMonoJoueur[nomsDesJoueurs.length];
+		for (int i = 0; i < nomsDesJoueurs.length; i++) {
 			PartieMonoJoueur partie = new PartieMonoJoueur();
 			parties[i] = partie;
 		}
 
-		return "Prochain tir : joueur " + prochainJoueur + ", tour n° " + 1 + ", boule n° " + 1;
+		return "Prochain tir : joueur " + nomsDesJoueurs[getNumProchainJoueur()] + ", tour n° " + 1 + ", boule n° " + 1;
 	}
 
 	/**
@@ -45,17 +42,27 @@ public class PartieMultiJoueurs implements IPartieMultiJoueurs {
 
 	@Override
 	public String enregistreLancer(int nombreDeQuillesAbattues) throws IllegalStateException {
-		int partiesTerm=0;
-		for (int i = 0; i < parties.length; i++) {
-			if (parties[i].estTerminee()) partiesTerm += 1;
-
-		}
-		if (partiesTerm == parties.length)
+		if (estTerminee())
 			throw new IllegalStateException("Partie terminee");
 
-		parties[numProchainJoueur].enregistreLancer(nombreDeQuillesAbattues);
-		numProchainJoueur += 1 % nomDesJoueurs.length;
-		return "Prochain tir : joueur " + prochainJoueur + ", tour n° " + parties[numProchainJoueur].numeroTourCourant() + ", boule n° " + parties[numProchainJoueur].numeroProchainLancer();
+		parties[getNumProchainJoueur()].enregistreLancer(nombreDeQuillesAbattues);
+		return "Prochain tir : joueur " + nomsDesJoueurs[getNumProchainJoueur()] + ", tour n° " + parties[getNumProchainJoueur()].numeroTourCourant() + ", boule n° " + parties[getNumProchainJoueur()].numeroProchainLancer();
+	}
+	
+	public int getNumProchainJoueur(){
+		int mec=0;
+		for (int i=0; i<parties.length;i++){
+			if (parties[mec].numeroTourCourant()>parties[i].numeroTourCourant())mec=i;
+		}
+		return mec;
+	}
+	
+	public Boolean estTerminee(){
+		for (int i = 0; i < parties.length; i++) {
+			if (!parties[i].estTerminee()) return false;
+
+		}
+		return true;
 	}
 
 	/**
@@ -68,10 +75,10 @@ public class PartieMultiJoueurs implements IPartieMultiJoueurs {
 
 	@Override
 	public int scorePour(String nomDuJoueur) throws IllegalArgumentException {
-		if (existe(nomDesJoueurs, nomDuJoueur)==-1)
+		if (existe(nomsDesJoueurs, nomDuJoueur)==-1)
 			throw new IllegalArgumentException("Le joueur n'existe pas");
 		
-		return parties[existe(nomDesJoueurs,nomDuJoueur)].score();
+		return parties[existe(nomsDesJoueurs,nomDuJoueur)].score();
 	}
 
 	static int existe(String T[], String val){
