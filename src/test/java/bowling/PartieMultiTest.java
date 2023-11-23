@@ -18,8 +18,7 @@ public class PartieMultiTest {
 
 	@Test
 	void Demarrage() {
-		PartieMultiJoueurs partie2 = new PartieMultiJoueurs();
-		assertEquals("Prochain tir : joueur Pierre, tour n° 1, boule n° 1", partie2.demarreNouvellePartie(new String[]{"Pierre", "Paul"}),
+		assertEquals("Prochain tir : joueur Pierre, tour n° 1, boule n° 1", partie.demarreNouvellePartie(new String[]{"Pierre", "Paul"}),
 			"On doit commencer au joueur Pierre");
 
 	}
@@ -36,6 +35,25 @@ public class PartieMultiTest {
 	void nvLanceStrkie(){
 		assertEquals("Prochain tir : joueur Paul, tour n° 1, boule n° 1",partie.enregistreLancer(10),
 			"prochain lancer : Paul ");
+	}
+	
+	@Test
+	void testTermine(){
+		for (int i=0;i<=25;i++){
+			partie.enregistreLancer(1);
+		}
+		assertThrows(IllegalArgumentException.class, () -> {
+			// On doit avoir une exception
+			partie.enregistreLancer(1);
+		}, "Partie finie");
+	}
+	
+	@Test
+	void nomsNull(){
+		assertThrows(IllegalArgumentException.class, () -> {
+			// On doit avoir une exception
+			partie.demarreNouvellePartie(new String[]{});
+		}, "Pas de joueurs");
 	}
 	
 

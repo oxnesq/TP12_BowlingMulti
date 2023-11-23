@@ -19,7 +19,7 @@ public class PartieMultiJoueurs implements IPartieMultiJoueurs {
 	 */
 	@Override
 	public String demarreNouvellePartie(String[] nomsDesJoueurs) throws IllegalArgumentException {
-		if (nomsDesJoueurs == null) throw new IllegalArgumentException("pas de joueurs");
+		if (nomsDesJoueurs.length==0) throw new IllegalArgumentException("pas de joueurs");
 		this.nomsDesJoueurs = nomsDesJoueurs;
 		this.parties =new PartieMonoJoueur[nomsDesJoueurs.length];
 		for (int i = 0; i < nomsDesJoueurs.length; i++) {
@@ -58,9 +58,8 @@ public class PartieMultiJoueurs implements IPartieMultiJoueurs {
 	}
 	
 	public Boolean estTerminee(){
-		for (int i = 0; i < parties.length; i++) {
+		for (int i = 0; i <= parties.length; i++) {
 			if (!parties[i].estTerminee()) return false;
-
 		}
 		return true;
 	}
